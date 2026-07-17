@@ -1,0 +1,138 @@
+import networkx as nx
+import matplotlib.pyplot as plt
+
+# Create graph
+G = nx.Graph()
+
+# Nodes with heuristic values
+heuristics = {
+    "Mumbai\nh(n)=20": 20,
+    "Eastern Express\nHighway\nh(n)=16": 16,
+    "Atal Setu\nh(n)=14": 14,
+    "Dadar Railway\nStation\nh(n)=15": 15,
+    "Panvel\nh(n)=11": 11,
+    "Khalapur\nh(n)=10": 10,
+    "Karjat\nh(n)=9": 9,
+    "Lonavala\nh(n)=6": 6,
+    "Lonavala Railway\nh(n)=5": 5,
+    "Pimpri-Chinchwad\nh(n)=2": 2,
+    "Shivajinagar\nh(n)=2": 2,
+    "Pune\nh(n)=0": 0
+}
+
+# Add nodes
+for node in heuristics:
+    G.add_node(node)
+
+# Add edges (distance in km)
+edges = [
+
+    # Route 1 (Car)
+    ("Mumbai\nh(n)=20", "Eastern Express\nHighway\nh(n)=16", 5),
+    ("Eastern Express\nHighway\nh(n)=16", "Panvel\nh(n)=11", 12),
+    ("Panvel\nh(n)=11", "Lonavala\nh(n)=6", 18),
+    ("Lonavala\nh(n)=6", "Pimpri-Chinchwad\nh(n)=2", 12),
+    ("Pimpri-Chinchwad\nh(n)=2", "Pune\nh(n)=0", 8),
+
+    # Route 2 (Bike)
+    ("Mumbai\nh(n)=20", "Atal Setu\nh(n)=14", 8),
+    ("Atal Setu\nh(n)=14", "Khalapur\nh(n)=10", 10),
+    ("Khalapur\nh(n)=10", "Lonavala\nh(n)=6", 15),
+
+    # Route 3 (Train)
+    ("Mumbai\nh(n)=20", "Dadar Railway\nStation\nh(n)=15", 6),
+    ("Dadar Railway\nStation\nh(n)=15", "Karjat\nh(n)=9", 11),
+    ("Karjat\nh(n)=9", "Lonavala Railway\nh(n)=5", 14),
+    ("Lonavala Railway\nh(n)=5", "Shivajinagar\nh(n)=2", 10),
+    ("Shivajinagar\nh(n)=2", "Pune\nh(n)=0", 6),
+
+    # Connecting edges
+    ("Lonavala\nh(n)=6", "Lonavala Railway\nh(n)=5", 5),
+    ("Pimpri-Chinchwad\nh(n)=2", "Shivajinagar\nh(n)=2", 7),
+]
+
+G.add_weighted_edges_from(edges)
+
+# Node positions
+pos = {
+    "Mumbai\nh(n)=20": (0, 4),
+
+    "Eastern Express\nHighway\nh(n)=16": (-3, 2),
+    "Atal Setu\nh(n)=14": (0, 2),
+    "Dadar Railway\nStation\nh(n)=15": (3, 2),
+
+    "Panvel\nh(n)=11": (-3, 0),
+    "Khalapur\nh(n)=10": (0, 0),
+    "Karjat\nh(n)=9": (3, 0),
+
+    "Lonavala\nh(n)=6": (-1.5, -2),
+    "Lonavala Railway\nh(n)=5": (1.5, -2),
+
+    "Pimpri-Chinchwad\nh(n)=2": (-1.5, -4),
+    "Shivajinagar\nh(n)=2": (1.5, -4),
+
+    "Pune\nh(n)=0": (0, -6),
+}
+
+# Draw nodes
+nx.draw_networkx_nodes(
+    G,
+    pos,
+    node_color="lightblue",
+    node_size=2200,
+    edgecolors="black"
+)
+
+# Draw labels
+nx.draw_networkx_labels(
+    G,
+    pos,
+    font_size=8,
+    font_weight="bold"
+)
+
+# Draw all edges
+nx.draw_networkx_edges(
+    G,
+    pos,
+    edge_color="gray",
+    width=2
+)
+
+# Highlight Car Route (Optimal)
+car_route = [
+    ("Mumbai\nh(n)=20", "Eastern Express\nHighway\nh(n)=16"),
+    ("Eastern Express\nHighway\nh(n)=16", "Panvel\nh(n)=11"),
+    ("Panvel\nh(n)=11", "Lonavala\nh(n)=6"),
+    ("Lonavala\nh(n)=6", "Pimpri-Chinchwad\nh(n)=2"),
+    ("Pimpri-Chinchwad\nh(n)=2", "Pune\nh(n)=0"),
+]
+
+nx.draw_networkx_edges(
+    G,
+    pos,
+    edgelist=car_route,
+    edge_color="orange",
+    width=4
+)
+
+# Edge labels
+edge_labels = {(u, v): f"{w} km" for u, v, w in edges}
+
+nx.draw_networkx_edge_labels(
+    G,
+    pos,
+    edge_labels=edge_labels,
+    font_color="red",
+    font_size=8
+)
+
+plt.title(
+    "A* Routing Map: Mumbai to Pune\n"
+    "(Orange Path = Optimal Car Route)",
+    fontsize=14,
+    fontweight="bold"
+)
+
+plt.axis("off")
+plt.show()

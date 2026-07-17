@@ -1,0 +1,91 @@
+# Iterative Deepening Depth First Search (IDDFS)
+# Mumbai to Pune Route Search
+
+graph = {
+    "Mumbai": ["Eastern Express Highway", "Atal Setu", "Dadar Railway Station"],
+
+    # Route 1 (Car)
+    "Eastern Express Highway": ["Sion"],
+    "Sion": ["Panvel"],
+    "Panvel": ["Lonavala"],
+    "Lonavala": ["Pimpri Chinchwad"],
+    "Pimpri Chinchwad": ["Pune"],
+
+    # Route 2 (Bike)
+    "Atal Setu": ["JNPT"],
+    "JNPT": ["Khalapur"],
+    "Khalapur": ["Lonavala"],
+
+    # Route 3 (Train)
+    "Dadar Railway Station": ["Karjat"],
+    "Karjat": ["Lonavala Railway Station"],
+    "Lonavala Railway Station": ["Shivajinagar"],
+    "Shivajinagar": ["Pune"],
+
+    "Pune": []
+}
+
+# Depth Limited Search
+def DLS(node, goal, limit, path, visited):
+    print(node, end=" ")
+
+    if node == goal:
+        path.append(node)
+        return True
+
+    if limit <= 0:
+        return False
+
+    visited.add(node)
+
+    for neighbour in graph[node]:
+        if neighbour not in visited:
+            if DLS(neighbour, goal, limit - 1, path, visited):
+                path.insert(0, node)
+                return True
+
+    return False
+
+
+# Iterative Deepening DFS
+def IDDFS(start, goal, max_depth):
+
+    for depth in range(max_depth + 1):
+
+        print("\nSearching at Limit:", depth)
+
+        path = []
+        visited = set()
+
+        found = DLS(start, goal, depth, path, visited)
+
+        if found:
+            print("\n\nFound")
+            print("IDDFS Traversal from", start, "to", goal, "is:")
+            print(" -> ".join(path))
+            return
+
+        else:
+            print("\n\nNot Found!")
+
+        print("-" * 50)
+
+
+source = "Mumbai"
+destination = "Pune"
+
+IDDFS(source, destination, 6)
+
+print("\n")
+print("=" * 50)
+print("Available Routes")
+print("=" * 50)
+
+print("\nRoute 1 (Car)")
+print("Mumbai -> Eastern Express Highway -> Sion -> Panvel -> Lonavala -> Pimpri Chinchwad -> Pune")
+
+print("\nRoute 2 (Bike)")
+print("Mumbai -> Atal Setu -> JNPT -> Khalapur -> Lonavala -> Pimpri Chinchwad -> Pune")
+
+print("\nRoute 3 (Train)")
+print("Mumbai -> Dadar Railway Station -> Karjat -> Lonavala Railway Station -> Shivajinagar -> Pune")
